@@ -40,7 +40,7 @@
                              @error('username')
                               is-invalid
                             @enderror
-                            " placeholder="Username" name="username" >
+                            " placeholder="Username" name="username" value="{{ old('username') }}">
 
                             @error('username')
                             <div class="invalid-feedback">

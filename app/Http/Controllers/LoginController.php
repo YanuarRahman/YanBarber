@@ -11,9 +11,9 @@ class LoginController extends Controller
     {
         if ($user =  Auth::user()) {
             if ($user->level == '1') {
-                return redirect()->intended('Beranda');
+                return redirect()->intended('Administrator');
             } elseif ($user->level == '2') {
-                return redirect()->intended('User');
+                return redirect()->intended('Beranda');
             }
         }
 
@@ -31,9 +31,34 @@ class LoginController extends Controller
             'password.required' => 'Password Tidak Boleh Kosong',
         ]);
 
+        $kredensial = $request->only('username', 'password');
+
+        if (Auth::attempt($kredensial)) {
+            $request->session()->regenerate();
+            if ($user =  Auth::user()) {
+                if ($user->level == '1') {
+                    return redirect()->intended('Administrator');
+                } elseif ($user->level == '2') {
+                    return redirect()->intended('Beranda');
+                }
+            }
+
+            return redirect()->intended('/');
+        }
+
 
         return back()->withErrors([
-            'username' => 'Maaf Username atau Password Failed',
+            'username' => 'Maaf Username atau Password Salah',
         ])->onlyInput('username');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->intended('/login');
     }
 }
