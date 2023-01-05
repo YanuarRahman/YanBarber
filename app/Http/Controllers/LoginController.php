@@ -19,4 +19,21 @@ class LoginController extends Controller
 
         return view('login.login_view');
     }
+
+
+    public function proses(Request $request)
+    {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ], [
+            'username.required' => 'Username Tidak Boleh Kosong',
+            'password.required' => 'Password Tidak Boleh Kosong',
+        ]);
+
+
+        return back()->withErrors([
+            'username' => 'Maaf Username atau Password Failed',
+        ])->onlyInput('username');
+    }
 }
